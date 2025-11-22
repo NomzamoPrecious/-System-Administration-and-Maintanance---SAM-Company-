@@ -5,281 +5,247 @@
 
 ## **1. Company Network Structure**
 
-The SAM Company operates a multi-branch network across **Pretoria (Head Office), Soshanguve, Ga-Rankuwa, and Polokwane**. The Pretoria branch hosts the main data center containing all critical servers, acting as the core network hub. This topology ensures centralized authentication, data access, and system management, enabling stronger security and easier administration.
+SAM Company operates a multi-branch network environment across four locations: **Pretoria (Head Office), Soshanguve, Ga-Rankuwa, and Polokwane**. The Pretoria office functions as the centralized data center and hosts all core server infrastructure, including **Active Directory Domain Services (AD DS), DNS, DHCP, file storage, and Windows Deployment Services (WDS)**. Centralization of critical services ensures that authentication, identity management, and data access are uniform across all branches, reducing administrative complexity and improving security.
 
-Each branch contains workstations and departmental PCs relying on Pretoria’s infrastructure for services such as:
+All remote branches connect securely to Pretoria HQ via **VPN tunnels**, which provide encrypted communication channels that safeguard data in transit. While each branch maintains its own local workstations, essential services such as identity verification, network authentication, and file access rely on the Pretoria servers. This setup ensures that:
 
-- **Active Directory Domain Authentication**  
-- **DNS name resolution**  
-- **DHCP IP assignment**  
-- **File sharing and centralized storage**  
-- **Remote support using RDP**  
-- **Image deployment services**  
+- User credentials are centrally validated through **AD DS**  
+- Network resources are consistently available to all authorized users  
+- Security policies can be enforced from a central location  
+- Troubleshooting and system updates can be applied efficiently  
 
-This documentation outlines all the steps completed to design, secure, and manage this environment.
+### Core Services Provided to Branches
 
----
-
-## **2. Setting IP for the Server**
-
-A stable network requires predictable IP addressing. The server was configured with a **static IP address**, ensuring uninterrupted domain services.
-
-### Steps followed:
-
-1. **Network and Sharing Center** was opened  
-2. Navigation to **Adapter Settings**  
-3. **Ethernet Properties** of the server was opened  
-4. **Internet Protocol Version 4 (TCP/IPv4)** was selected  
-5. Configuration applied:
-   - **Static IP Address**  
-   - **Subnet Mask:** 255.255.255.0  
-   - **Default Gateway:** Router IP  
-   - **Preferred DNS:** Server's own IP  
-   - **Alternate DNS:** Google 8.8.8.8  
-
-Static IP ensures:
-
-- DNS server stability  
-- Domain Controller operations  
-- DHCP services  
-- Remote access (RDP)  
+- **Active Directory Domain Authentication:** Centralized authentication and access management for all users and devices.  
+- **DNS Name Resolution:** Translates domain names to IP addresses, allowing devices to locate servers and services efficiently.  
+- **DHCP IP Assignment:** Automates IP address allocation to prevent conflicts and ensure smooth network communication.  
+- **File Sharing and Centralized Storage:** Provides secure access to departmental files and ensures data backup and version control.  
+- **Remote Support Using RDP:** Enables IT administrators to manage systems remotely for troubleshooting or configuration.  
+- **Image Deployment Services:** Automates workstation and server operating system installations, saving time and ensuring consistency.  
 
 ---
 
-## **3. Adding Roles and Features**
+## **2. Server IP Configuration**
 
-Using **Server Manager**, several roles were installed to support enterprise network operations.
+A **static IP address** was assigned to the main server to ensure stability, reliability, and uninterrupted network services. Static addressing is critical for core infrastructure because services such as **DNS, DHCP, and AD DS** rely on fixed IPs for proper resolution and operation. Dynamic IPs could cause service interruptions if addresses were reassigned.
 
-### Installed roles:
+### Configuration Process
 
-- **Active Directory Domain Services (AD DS)**  
-- **DNS Server**  
-- **DHCP Server**  
-- **File and Storage Services**  
-- **Group Policy Management**  
-- **Windows Deployment Services (WDS)**  
+1. **Network and Sharing Center** was opened to access network adapter settings.  
+2. **Ethernet Properties** were modified to configure TCP/IPv4 manually.  
+3. The following parameters were applied:
+   - **Static IP Address** to ensure consistent network identity  
+   - **Subnet Mask:** 255.255.255.0 to define the network range  
+   - **Default Gateway:** Router IP for outbound traffic  
+   - **Preferred DNS:** Server’s own IP to provide domain name resolution internally  
+   - **Alternate DNS:** External DNS (8.8.8.8) for redundancy  
 
-Roles function as follows:
-
-- **AD DS:** manages users, computers, and authentication  
-- **DNS:** resolves names to IP addresses  
-- **DHCP:** automates IP allocation  
-- **Group Policy:** enforces security and configurations  
-- **WDS:** automates workstation and server installations  
-
-These installations prepared the server as the core of the domain network.
+This configuration ensured that the server could reliably provide domain, DHCP, and DNS services without interruptions.
 
 ---
 
-## **4. Setting Domain Name**
+## **3. Roles and Features Installation**
 
-After AD DS installation, the server was promoted to a **Domain Controller**.
+Using **Server Manager**, key roles were installed to enable the server to function as a full **enterprise network hub**. These roles provide essential services for authentication, resource management, and network administration.
 
-### Steps followed:
+### Roles Installed
 
-1. Post-installation wizard opened  
-2. **Add a new forest** selected  
-3. Domain name entered: **samcompany.local**  
-4. Directory Services Restore Mode (DSRM) password configured  
-5. Configuration completed and server restarted  
+- **Active Directory Domain Services (AD DS):** Centralized management of user accounts, computer accounts, and authentication policies.  
+- **DNS Server:** Resolves domain names to IP addresses, which is essential for communication across the network.  
+- **DHCP Server:** Automatically assigns IP addresses to devices, simplifying administration and reducing errors.  
+- **File and Storage Services:** Provides secure file storage and sharing capabilities.  
+- **Group Policy Management:** Allows IT administrators to enforce security and configuration policies across multiple devices.  
+- **Windows Deployment Services (WDS):** Automates operating system deployment, saving time and ensuring consistency across devices.  
 
-The server now functions as the primary domain controller, supporting user, computer, OU, and policy management.
-
----
-
-## **5. Creating Organizational Units (OUs)**
-
-Active Directory was structured using **ADUC** by creating OUs for each department:
-
-- **IT Department**  
-- **HR Department**  
-- **Finance Department**  
-- **Procurement Department**  
-- **Staff Computers**  
-- **Admin Accounts**  
-
-This structure improved security, reduced misconfigurations, and allowed fine-grained administrative control.
+Each role was installed with **default settings optimized for enterprise environments**, and post-installation checks were performed to ensure proper integration.
 
 ---
 
-## **6. Creating New Users**
+## **4. Domain Configuration**
 
-Users were added per department with the following conventions:
+The server was promoted to a **Domain Controller** to centralize user authentication, policy enforcement, and resource management. This step is critical for secure, scalable network administration.
+
+### Steps Executed
+
+1. The post-installation wizard was accessed.  
+2. **Add a new forest** was selected to define a unique domain environment.  
+3. Domain name configured as **samcompany.local**, which represents the organization internally.  
+4. **Directory Services Restore Mode (DSRM)** password was set for disaster recovery purposes.  
+5. Server restarted to complete promotion to a Domain Controller.  
+
+Once complete, the server provided centralized authentication, simplified administration, and support for **Group Policy Objects (GPOs)** and shared resource management.
+
+---
+
+## **5. Organizational Units (OUs)**
+
+Organizational Units (OUs) were created using **Active Directory Users and Computers (ADUC)** to logically separate users, computers, and resources by department. Proper OU design enables:
+
+- Targeted policy enforcement  
+- Simplified administration  
+- Enhanced security through access segregation  
+
+### OUs Created
+
+- IT Department  
+- HR Department  
+- Finance Department  
+- Procurement Department  
+- Staff Computers  
+- Admin Accounts  
+
+This hierarchy allows GPOs to be applied specifically to departments or device types without affecting unrelated users.
+
+---
+
+## **6. User Account Creation**
+
+Users were created within their respective OUs to reflect departmental organization. Security groups were assigned to control access to network resources.
+
+### Key Configuration Points
 
 - Username format: **firstname.surname**  
-- Temporary passwords assigned  
-- “User must change password at next logon” enabled  
-- Added to **security groups** (ITGroup, HRGroup, FinanceGroup, ProcurementGroup)  
+- Temporary passwords assigned; “User must change password at next logon” enabled  
+- Membership in security groups: ITGroup, HRGroup, FinanceGroup, ProcurementGroup  
 
-This ensured proper access control and compliance.
-
----
-
-## **7. Shared Folder Access**
-
-Departmental shared folders were created:
-
-| Department  | Access Level |
-| ----------- | ------------ |
-| IT          | Full Control |
-| HR          | Modify       |
-| Finance     | Modify       |
-| Procurement | Read/Write   |
-
-Permissions applied using:
-
-- **NTFS permissions** (file-level)  
-- **Share permissions** (network-level)  
-
-This setup secured sensitive data and simplified administration.
+This ensures consistent naming, secure initial access, and proper group-based resource control.
 
 ---
 
-## **8. IT Group Permissions**
+## **7. Shared Folder Configuration**
 
-The IT department was granted elevated privileges:
+Department-specific shared folders were created to provide secure access to critical files. Both **NTFS** and **share permissions** were configured to ensure granular security at the file and network levels.
+
+| Department  | Permission Level | Description                         |
+|------------|-----------------|-------------------------------------|
+| IT         | Full Control    | Administer files and settings       |
+| HR         | Modify          | Access employee-related files       |
+| Finance    | Modify          | Access financial documents          |
+| Procurement| Read/Write      | Manage supplier and purchasing data |
+
+---
+
+## **8. IT Group Privileges**
+
+IT users were granted elevated privileges to manage infrastructure and troubleshoot issues efficiently:
 
 - Added to **Local Administrators** on workstations  
-- Granted **PowerShell** access  
-- Enabled **RDP**  
-- Allowed software installation and system configuration  
+- PowerShell access enabled  
+- Remote Desktop Protocol (RDP) access provided  
+- Software installation and configuration permissions granted  
+
+These permissions allow IT to maintain network health without compromising security for regular users.
 
 ---
 
-## **9. HR Permissions**
+## **9. Departmental Restrictions**
 
-HR department was restricted to sensitive resources:
+HR, Finance, and Procurement departments were restricted to sensitive resources only. Specific measures included:
 
-- **Run command** disabled  
-- PowerShell and Windows settings limited  
-- Exclusive access to **HR shared folders**  
-
----
-
-## **10. Disabling the Run Command for HR, Finance, and Procurement**
-
-The Run command was disabled for the HR, Finance, and Procurement departments to:
-
-- Prevent misuse of commands  
-- Reduce malware risk  
-- Maintain system stability  
+- **Run command disabled** to prevent execution of unauthorized tools  
+- PowerShell access limited  
+- Windows configuration settings restricted  
+- Access granted only to departmental folders  
 
 ---
 
-## **11. Creating Group Policy Object (GPO)**
+## **10. Group Policy Object (GPO) Implementation**
 
-A GPO named **Disable_Run_For_NonIT** was created.
+A **GPO** named **Disable_Run_For_NonIT** was created to enforce system restrictions on non-IT users.  
 
-Configuration applied:
-
-`User Configuration → Administrative Templates → Start Menu and Taskbar → Remove Run menu from Start Menu = Enabled`
-
----
-
-## **12. Linking the GPO to OUs**
-
-The GPO was linked to:
-
-- HR OU  
-- Finance OU  
-- Procurement OU  
-
-Run command restrictions were successfully applied to all targeted users.
+- Path: `User Configuration → Administrative Templates → Start Menu and Taskbar → Remove Run menu from Start Menu = Enabled`  
+- Linked to HR, Finance, and Procurement OUs  
+- Effectiveness confirmed through testing  
 
 ---
 
-## **13–16. Testing Run Command and IT Exception**
+## **11. Remote Desktop Protocol (RDP) Configuration**
 
-- HR, Finance, Procurement → **Blocked**  
-- ITGroup → **Allowed**  
-- Access verified using **Win + R** and **PowerShell**  
+RDP access was restricted to ITGroup only:
 
----
-
-## **17–18. Enabling and Testing RDP for ITGroup**
-
-- GPO: **Enable_RDP_IT** applied  
+- GPO **Enable_RDP_IT** applied  
 - ITGroup added to **Remote Desktop Users**  
-- Firewall port **3389** opened  
+- Firewall port 3389 opened for remote connections  
 
-**Tests:**
+Testing confirmed that:
 
-- Non-IT → Denied  
-- IT → Allowed, confirming remote troubleshooting capability  
+- Non-IT users could not access RDP  
+- IT users could successfully connect for remote administration  
 
 ---
 
-## **19. Converting Basic Disk to Dynamic Disk**
+## **12. Storage Management**
 
-Dynamic disks were implemented to allow:
+### Dynamic Disk Conversion
 
-- Volume expansion  
-- Mirrored and striped volumes  
+Basic disks were converted to **dynamic disks** to allow:
+
+- Volume expansion without downtime  
+- Mirrored or striped volumes for redundancy  
 - Flexible storage management  
 
-Conversion confirmed using **Disk Management**.
+### Disk Quotas
 
----
+Quota management was implemented on shared drives:
 
-## **20. Configuring Disk Quotas**
-
-Disk quotas configured:
-
-- **Drive Properties → Quota Management** enabled  
 - Warning level: 80%  
 - Hard limit: 100%  
 
-Applied to all non-IT users to prevent storage overuse.
+This prevented excessive consumption of storage by individual users and ensured equitable space usage.
 
 ---
 
-## **21. IT Department Automatic Deployment – WDS**
+## **13. Windows Deployment Services (WDS)**
 
-Windows Deployment Services (WDS) installed to automate OS deployments:
+WDS was configured to automate the deployment of operating systems across workstations:
 
-- Role installed  
 - Boot images (WinPE) added  
 - Install images (Windows 10/11) added  
 - PXE boot configured  
-- DHCP integrated  
+- DHCP integration completed  
 
-Benefits:
+**Benefits:**  
 
-- Time-saving  
-- Standardized installations  
-- Reduced manual errors  
-
----
-
-## **22. DHCP IP Address Scope**
-
-DHCP configured to automatically assign IP addresses:
-
-- Scope range, subnet, gateway, DNS  
-- Enabled seamless connectivity for all branch devices  
+- Standardized installations reduce configuration errors  
+- Time-efficient deployment saves administrative effort  
+- Consistent environment across all workstations  
 
 ---
 
-## **23–24. DNS Forward and Reverse Lookup Zones**
+## **14. DHCP Configuration**
 
-- Forward Zone configured: names → IP  
-- Reverse Zone configured: IP → names  
-- Static A and PTR records created for servers  
+DHCP scopes were defined to automate IP assignment:
 
-Supports domain operations and troubleshooting.
+- Scope range, subnet mask, default gateway, and DNS configured  
+- Simplified network configuration for all branch devices  
+- Reduced risk of IP conflicts  
+
+---
+
+## **15. DNS Configuration**
+
+### Forward Lookup Zone
+
+- Translates **hostnames to IP addresses**  
+- Static A records configured for all servers  
+
+### Reverse Lookup Zone
+
+- Translates **IP addresses to hostnames**  
+- PTR records created to aid in troubleshooting and auditing  
 
 ---
 
 ## **Conclusion**
 
-The project successfully implemented:
+The project successfully implemented an enterprise **Windows Server network** including:
 
-- **Active Directory**  
-- **DNS & DHCP**  
-- **GPO security policies**  
-- **Shared folder management**  
-- **Storage quotas and dynamic disks**  
-- **RDP restrictions**  
-- **Automated OS deployment (WDS)**  
+- Active Directory structure and user management  
+- DNS and DHCP services  
+- GPO security and access control  
+- Shared folder configuration and permission management  
+- Storage optimization with dynamic disks and quotas  
+- RDP restriction for secure remote management  
+- Automated OS deployment using WDS  
 
-The SAM Company network is now **secure, scalable, and fully operational**, demonstrating professional Windows Server administration practices.
+The SAM Company network is now **secure, scalable, and fully operational**, reflecting professional system administration standards.
