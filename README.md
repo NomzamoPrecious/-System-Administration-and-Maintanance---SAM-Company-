@@ -1,8 +1,6 @@
 # -System-Administration-and-Maintanance---SAM-Company-
 # 🖥️ SYSTEM ADMINISTRATION AND MAINTENANCE PROJECT
 
-**Year:** 2025  
-
 ---
 
 ## **1. Company Network Structure**
